@@ -44,6 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChunkedRequestSettingsProvider.cs" />
+    <Compile Include="Contracts\IRequestSettingsProvider.cs" />
+    <Compile Include="DTOs\Enums\Headers\Accept.cs" />
+    <Compile Include="DTOs\Enums\Headers\AcceptLanguage.cs" />
+    <Compile Include="DTOs\Enums\Headers\AcceptTopic.cs" />
+    <Compile Include="DTOs\Enums\Headers\ContentType.cs" />
+    <Compile Include="DTOs\Enums\Headers\XDictationAudioSource.cs" />
+    <Compile Include="DTOs\HttpWebRequestHeadersSettings.cs" />
+    <Compile Include="DTOs\UrlSettings.cs" />
+    <Compile Include="Extensions\HttpWebRequestExtensions.cs" />
+    <Compile Include="Helpers\UrlBuilder.cs" />
+    <Compile Include="HttpWebRequestBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

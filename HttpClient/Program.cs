@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Net;
-using System.Security.Policy;
 using System.Text;
-using System.Web;
+using HttpClient.DTOs;
 
 namespace HttpClient
 {
@@ -12,7 +8,19 @@ namespace HttpClient
 	{
 		static void Main(string[] args)
 		{
-			var request = new HttpWebRequestBuilder().Build();
+			// TODO: ii: move to some factory
+			var urlSettings = new UrlSettings
+			{
+				Scheme = Uri.UriSchemeHttps,
+				Host = "dictation.nuancemobility.net",
+				Path = "/NMDPAsrCmdServlet/dictation",
+				AppId = "MY_APP",
+				AppKey = "777",
+				Id = "111"
+			};
+			var requestSettingsProvider = new ChunkedRequestSettingsProvider();
+			var headersSettings = requestSettingsProvider.Provide();
+			var request = new HttpWebRequestBuilder().Build(urlSettings, headersSettings);
 			// chunk size - 4160 bytes  of PCM 16 bits 8 kHz
 			var stream = request.GetRequestStream();
 
