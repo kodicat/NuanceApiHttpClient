@@ -26,19 +26,19 @@ namespace HttpClient
 		static string BuildUrlQuery(object values)
 		{
 			var type = values.GetType();
-			var fields = type.GetFields();
-			var resultBuilder = new StringBuilder("?", 32);
-			foreach (var field in fields)
+			var properties = type.GetProperties();
+			var resultBuilder = new StringBuilder(32);
+			foreach (var property in properties)
 			{
-				var key = field.Name;
-				var value = type.GetField(key)?.GetValue(values);
+				var key = property.Name;
+				var value = type.GetProperty(key)?.GetValue(values).ToString();
 
 				resultBuilder.Append(HttpUtility.UrlEncode(key));
 				resultBuilder.Append("=");
-				resultBuilder.Append(HttpUtility.UrlEncode((string) value));
+				resultBuilder.Append(HttpUtility.UrlEncode(value));
 				resultBuilder.Append("&");
 			}
-			resultBuilder.Length--;
+			resultBuilder.Length--; // delete trailing '&'
 
 			return resultBuilder.ToString();
 		}
