@@ -4,10 +4,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HttpClient")]
+[assembly: AssemblyTitle("Recording")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("HttpClient")]
+[assembly: AssemblyProduct("Recording")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("eb342f2f-2837-4c18-b25e-ec1ced6fee53")]
+[assembly: Guid("1024424b-6c96-48e2-a788-9a6a0462de9a")]
 
 // Version information for an assembly consists of the following four values:
 //
