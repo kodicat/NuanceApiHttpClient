@@ -1,5 +1,4 @@
-﻿using System;
-using HttpClient.Contracts;
+﻿using HttpClient.Contracts;
 using HttpClient.DTOs;
 using HttpClient.DTOs.Enums.Headers;
 
@@ -13,7 +12,7 @@ namespace HttpClient
 			{
 				IsChunked = true,
 				Accept = Accept.TextPlain,
-				AcceptLanguage = AcceptLanguage.Ukrainian,
+				AcceptLanguage = AcceptLanguage.English,
 				AcceptTopic = AcceptTopic.Dictation,
 				ContentType = ContentType.Pcm8,
 				XDictationAudioSource = XDictationAudioSource.SpeakerAndMicrophone,

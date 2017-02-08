@@ -1,51 +1,51 @@
 ﻿using System;
-using System.Text;
-using HttpClient.DTOs;
+using NAudio.Wave;
 
 namespace HttpClient
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static WaveInEvent waveSource;
+		static HttpRequestSender requestSender;
+
+		static void Main()
 		{
-			// TODO: ii: move to some factory
-			var urlSettings = new UrlSettings
-			{
-				Scheme = Uri.UriSchemeHttps,
-				Host = "dictation.nuancemobility.net",
-				Path = "/NMDPAsrCmdServlet/dictation",
-				AppId = "MY_APP",
-				AppKey = "777",
-				Id = "111"
-			};
-			var requestSettingsProvider = new ChunkedRequestSettingsProvider();
-			var headersSettings = requestSettingsProvider.Provide();
-			var request = new HttpWebRequestBuilder().Build(urlSettings, headersSettings);
-			// chunk size - 4160 bytes  of PCM 16 bits 8 kHz
-			var stream = request.GetRequestStream();
+			Start();
+			Console.ReadKey();
+			Stop();
+			Console.ReadKey();
+		}
 
-			string nextLine;
-			int totalBytes = 0;
+		static void Start()
+		{
+			waveSource = new WaveInEvent();
+			waveSource.BufferMilliseconds = 260;
 
-			// Read a series of lines from the console and transmit them to the server.
-			while (!string.IsNullOrEmpty(nextLine = Console.ReadLine()))
-			{
-				var bytes = Encoding.UTF8.GetBytes(nextLine);
-				totalBytes += bytes.Length;
-				Console.WriteLine($"CLIENT: Sending {bytes.Length} bytes ({totalBytes} total)");
-				stream.Write(bytes, 0, bytes.Length);
-				stream.Flush();
-			}
+			waveSource.DataAvailable += OnDataAvailable;
+			waveSource.RecordingStopped += OnRecordingStopped;
 
-			try
-			{
-				var response = request.GetResponse();
-				Console.WriteLine(response);
-			}
-			catch (Exception exception)
-			{
-				Console.WriteLine(exception.Message);
-			}
+			requestSender = new HttpRequestSender();
+			requestSender.BuildRequest();
+
+			waveSource.StartRecording();
+		}
+
+		static void Stop()
+		{
+			waveSource.StopRecording();
+		}
+
+		static void OnDataAvailable(object sender, WaveInEventArgs e)
+		{
+			requestSender.SendChunked(e.Buffer, e.BytesRecorded);
+		}
+
+		static void OnRecordingStopped(object sender, StoppedEventArgs e)
+		{
+			requestSender.CloseConnection();
+
+			waveSource?.Dispose();
+			waveSource = null;
 		}
 	}
 }

@@ -6,9 +6,11 @@ namespace Recording
 	class Program
 	{
 		static WaveInEvent waveSource;
-		static WaveFileWriter waveFile;
+		public static event EventHandler<StreamingAudioBufferAvailableEventArgs> DataAvailable;
+		public static event EventHandler<StreamingAudioStoppedEventArgs> StreamingStopped;
+		//static WaveFileWriter waveFile;
 
-		static void Main(string[] args)
+		static void Main()
 		{
 			Start();
 			Console.ReadKey();
@@ -19,13 +21,14 @@ namespace Recording
 		static void Start()
 		{
 			waveSource = new WaveInEvent();
-			waveSource.WaveFormat = new WaveFormat(8000, 16, 2);
+			//waveSource.WaveFormat = new WaveFormat(8000, 16, 1); // default
+			waveSource.BufferMilliseconds = 260;
 
-			waveSource.DataAvailable += new EventHandler<WaveInEventArgs>(OnDataAvailable);
-			waveSource.RecordingStopped += new EventHandler<StoppedEventArgs>(OnRecordingStopped);
+			waveSource.DataAvailable += OnDataAvailable;
+			waveSource.RecordingStopped += OnRecordingStopped;
 
-			var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
-			waveFile = new WaveFileWriter($@"C:\Temp\{fileName}.wav", waveSource.WaveFormat);
+			//var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
+			//waveFile = new WaveFileWriter($@"C:\Temp\{fileName}.wav", waveSource.WaveFormat);
 
 			waveSource.StartRecording();
 		}
@@ -37,11 +40,12 @@ namespace Recording
 
 		static void OnDataAvailable(object sender, WaveInEventArgs e)
 		{
-			if (waveFile != null)
-			{
-				waveFile.Write(e.Buffer, 0, e.BytesRecorded);
-				waveFile.Flush();
-			}
+			DataAvailable?.Invoke(sender, new StreamingAudioBufferAvailableEventArgs(e.Buffer, e.BytesRecorded));
+			//if (waveFile != null)
+			//{
+			//	waveFile.Write(e.Buffer, 0, e.BytesRecorded);
+			//	waveFile.Flush();
+			//}
 		}
 
 		static void OnRecordingStopped(object sender, StoppedEventArgs e)
@@ -52,11 +56,13 @@ namespace Recording
 				waveSource = null;
 			}
 
-			if (waveFile != null)
-			{
-				waveFile.Dispose();
-				waveFile = null;
-			}
+			StreamingStopped?.Invoke(sender, new StreamingAudioStoppedEventArgs());
+
+			//if (waveFile != null)
+			//{
+			//	waveFile.Dispose();
+			//	waveFile = null;
+			//}
 		}
 	}
 }
